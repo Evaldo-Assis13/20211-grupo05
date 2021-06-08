@@ -17,7 +17,7 @@ public class Cliente {
 	@Column(unique = true) // nao funciona com @Valid tem que tratar na camada de persistência
 	private String cpf;
 	@NotNull
-	@Size(min = 1, max = 50, message = "Nome deve ser preenchido")
+	@Size(min = 1, max = 100, message = "Nome deve ser preenchido")
 	private String nome;
 	@Email(message = "E-mail inválido.")
 	private String email;

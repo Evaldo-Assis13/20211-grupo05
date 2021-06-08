@@ -14,6 +14,10 @@ public class Quarto {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(unique = true)
 	private Long idQuarto;
+	
+	@NotNull
+	@Size(min = 1, message = "O número do quarto deve ser preenchido corretamente")
+	private String numQuarto;
 
 	@NotNull
 	private String categoriaQuarto;
@@ -27,7 +31,8 @@ public class Quarto {
 	public Quarto() {
 	}
 
-	public Quarto(@NotNull String categoriaQuarto, Integer quantidadeDias, Double valorQuarto) {
+	public Quarto(@NotNull String numQuarto, String categoriaQuarto, Integer quantidadeDias, Double valorQuarto) {
+		this.numQuarto = this.numQuarto;
 		this.categoriaQuarto = categoriaQuarto;
 		this.quantidadeDias = quantidadeDias;
 		this.valorQuarto = valorQuarto;
@@ -39,6 +44,14 @@ public class Quarto {
 
 	public void setIdQuarto(Long idQuarto) {
 		this.idQuarto = idQuarto;
+	}
+
+	public String getNumQuarto() {
+		return numQuarto;
+	}
+
+	public void setNumQuarto(String numQuarto) {
+		this.numQuarto = numQuarto;
 	}
 
 	public String getCategoriaQuarto() {

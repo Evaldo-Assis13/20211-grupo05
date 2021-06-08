@@ -73,6 +73,7 @@ public class QuartoController {
 		// programacao defensiva - deve-se verificar se o Cliente existe antes de
 		// atualizar
 		Quarto umQuarto = servico.findByIdQuarto(idQuarto);
+		umQuarto.setNumQuarto(quarto.getNumQuarto());
 		umQuarto.setCategoriaQuarto(quarto.getCategoriaQuarto());
 		umQuarto.setQuantidadeDias(quarto.getQuantidadeDias());
 		umQuarto.setValorQuarto(quarto.getValorQuarto());
