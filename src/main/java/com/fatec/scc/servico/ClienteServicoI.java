@@ -2,6 +2,7 @@ package com.fatec.scc.servico;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -43,6 +44,7 @@ public class ClienteServicoI implements ClienteServico {
 		try {
 			String endereco = obtemEndereco(cliente.getCep());
 			if (endereco != null) {
+				cliente.setDataCadastro(new DateTime());
 				cliente.setEndereco(endereco);
 				repository.save(cliente);
 				logger.info(">>>>>> 4. comando save executado ");

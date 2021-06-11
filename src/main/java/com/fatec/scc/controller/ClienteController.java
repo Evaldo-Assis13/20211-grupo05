@@ -55,8 +55,11 @@ public class ClienteController {
 	public ModelAndView save(@Valid Cliente cliente, BindingResult result) {
 		ModelAndView modelAndView = new ModelAndView("consultarCliente");
 		if (result.hasErrors()) {
+			logger.info(">>>>>> 1. conotroller cadastrar cliente chamado pela view com erro ");
+			modelAndView.addObject("message", "Dados invalidos!");
 			modelAndView.setViewName("cadastrarCliente");
 		} else {
+			logger.info(">>>>>> 1. conotroller cadastrar cliente chamado pela view");
 			modelAndView = servico.saveOrUpdate(cliente);
 		}
 		return modelAndView;

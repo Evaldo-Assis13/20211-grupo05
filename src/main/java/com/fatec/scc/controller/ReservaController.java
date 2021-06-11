@@ -7,78 +7,51 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import com.fatec.scc.servico.ReservaServico;
 import com.fatec.scc.model.Reserva;
+import com.fatec.scc.servico.ClienteServico;
+import com.fatec.scc.servico.ReservaServico;
 
 @Controller
 @RequestMapping(path = "/sig")
 public class ReservaController {
 	Logger logger = LogManager.getLogger(ReservaController.class);
 	@Autowired
-	ReservaServico servico;
+	ReservaServico reservaServico;
 
-	@GetMapping("/reservas")
-	public ModelAndView retornaFormDeConsultaTodosReservas() {
-		ModelAndView modelAndView = new ModelAndView("consultarReserva");
-		modelAndView.addObject("reservas", servico.findAll());
-		return modelAndView;
-	}
+	@Autowired
+	ClienteServico servico;
 
 	@GetMapping("/reserva")
-	public ModelAndView retornaFormDeCadastroDe(Reserva reserva) {
-		ModelAndView mv = new ModelAndView("cadastrarReserva");
+	public ModelAndView retornaFormDeRegistroDeReserva(Reserva reserva) {
+		logger.info("1. Controller = abrir reserva selecionado no menu");
+		ModelAndView mv = new ModelAndView("abrirReserva");
+		mv.addObject("clientes", servico.findAll());
+		return mv;
+	}
+
+	@GetMapping("/reserva/{cpf}")
+	public ModelAndView registrarReserva(Reserva reserva) {
+		logger.info("2. Controller cadastrar reserva");
+		ModelAndView mv = new ModelAndView("registrarReserva");
 		mv.addObject("reserva", reserva);
 		return mv;
 	}
 
-	@GetMapping("/reservas/{idReserva}") // diz ao metodo que ira responder a uma requisicao do tipo get
-	public ModelAndView retornaFormParaEditarReserva(@PathVariable("idReserva") Long idReserva) {
-		ModelAndView modelAndView = new ModelAndView("atualizarReserva");
-		modelAndView.addObject("reserva", servico.findByIdReserva(idReserva)); // o repositorio e injetado no controller
-		return modelAndView; // addObject adiciona objetos para view
-	}
-
-	@GetMapping("/reserva/{idReserva}")
-	public ModelAndView excluirNoFormDeConsultaReserva(@PathVariable("idReserva") Long idReserva) {
-		servico.deleteById(idReserva);
-		logger.info(">>>>>> 1. servico de exclusao chamado para o id => " + idReserva);
-		ModelAndView modelAndView = new ModelAndView("consultarReserva");
-		modelAndView.addObject("reservas", servico.findAll());
-		return modelAndView;
-	}
-
 	@PostMapping("/reservas")
 	public ModelAndView save(@Valid Reserva reserva, BindingResult result) {
-		ModelAndView modelAndView = new ModelAndView("consultarReserva");
+		ModelAndView modelAndView = new ModelAndView("registrarReserva");
 		if (result.hasErrors()) {
-			modelAndView.setViewName("cadastrarReserva");
+			logger.info(">>>>>> 3. controller cadastrar reserva com rerro ");
+			modelAndView.addObject("message", "Dados invalidos!");
+			modelAndView.setViewName("cadastrarCliente");
 		} else {
-			modelAndView = servico.saveOrUpdate(reserva);
+			logger.info(">>>>>> 1. controller cadastrar reserva chamado pela view");
+			modelAndView = reservaServico.saveOrUpdate(reserva);
+			modelAndView.addObject("message", "Reserva cadastrado!");
 		}
 		return modelAndView;
 	}
-
-	@PostMapping("/reservas/{idReserva}")
-	public ModelAndView atualizaReserva(@PathVariable("idReserva") Long idReserva, @Valid Reserva reserva,
-			BindingResult result) {
-		ModelAndView modelAndView = new ModelAndView("consultarReserva");
-		if (result.hasErrors()) {
-			reserva.setIdReserva(idReserva);
-			return new ModelAndView("atualizarReserva");
-		}
-		// programacao defensiva - deve-se verificar se o Cliente existe antes de
-		// atualizar
-		Reserva umReserva = servico.findByIdReserva(idReserva);
-		umReserva.setCpf(reserva.getCpf());
-		umReserva.setNumQuarto(reserva.getNumQuarto());
-		umReserva.setDataEntrada(reserva.getDataEntrada());
-		umReserva.setDataSaida(reserva.getDataSaida());
-		modelAndView = servico.saveOrUpdate(umReserva);
-		return modelAndView;
-	}
-
 }
