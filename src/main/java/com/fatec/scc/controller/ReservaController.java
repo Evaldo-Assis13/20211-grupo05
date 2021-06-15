@@ -50,7 +50,7 @@ public class ReservaController {
 		} else {
 			logger.info(">>>>>> 1. controller cadastrar reserva chamado pela view");
 			modelAndView = reservaServico.saveOrUpdate(reserva);
-			modelAndView.addObject("message", "Reserva cadastrado!");
+			modelAndView.addObject("message", "Reserva cadastrada!");
 		}
 		return modelAndView;
 	}
